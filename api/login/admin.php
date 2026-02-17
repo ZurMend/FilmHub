@@ -8,7 +8,6 @@ if(password_verify($clave,$user['clave'])){
     response("success",["token"=>$token]);
 }
 
-
 $data = json_decode(file_get_contents("php://input"), true);
 
 $correo = $data['correo'];
