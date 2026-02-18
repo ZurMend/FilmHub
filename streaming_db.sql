@@ -119,6 +119,19 @@ ALTER TABLE `usuarios`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
 
+INSERT INTO usuarios 
+(nombre, apellido_paterno, apellido_materno, correo, clave, estado) 
+VALUES 
+(
+'Admin',
+'System',
+'Master',
+'Themaster@FilmHum.com',
+'$2y$10$wJ7vQ2p3b9sK1mN8xYzE7uQ4rT5yU6iO7pL8kJ9hGfD3sA2bC1dE', -- Contraseña: Pulgarsito3K
+'activo'
+);
+
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
