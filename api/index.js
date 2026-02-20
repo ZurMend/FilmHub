@@ -19,6 +19,9 @@ app.use('/api/test', testRoutes);
 const peliculasRoutes = require('./routes/peliculas.routes');
 app.use('/api/peliculas', peliculasRoutes);
 
+const clientesRoutes = require('./routes/clientes.routes');
+app.use('/api/clientes', clientesRoutes);
+
 // Ruta de prueba
 app.get('/', (req, res) => {
     res.json({

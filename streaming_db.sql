@@ -129,7 +129,7 @@ VALUES
 'System',
 'Master',
 'Themaster@FilmHub.com',
-'$2y$10$wJ7vQ2p3b9sK1mN8xYzE7uQ4rT5yU6iO7pL8kJ9hGfD3sA2bC1dE', -- Contraseña: Pulgarsito3K
+'$2y$10$wJ7vQ2p3b9sK1mN8xYzE7uQ4rT5yU6iO7pL8kJ9hGfD3sA2bC1dE', -- Contraseña: Admin1234
 'activo'
 );
 
