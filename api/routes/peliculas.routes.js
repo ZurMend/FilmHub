@@ -11,4 +11,10 @@ router.post(
     peliculasController.registrarPelicula
 );
 
+router.get('/', verifyToken, peliculasController.obtenerPeliculas);
+
+router.put('/:id/estado', verifyToken, peliculasController.cambiarEstado);
+
+router.put('/:id', verifyToken, upload.single('imagen'), peliculasController.actualizarPelicula);
+
 module.exports = router;

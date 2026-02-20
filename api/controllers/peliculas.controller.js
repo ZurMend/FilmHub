@@ -1,5 +1,9 @@
 const connection = require('../config/db');
 
+
+// =============================
+// REGISTRAR PELÍCULA
+// =============================
 exports.registrarPelicula = (req, res) => {
     const { nombre, genero, descripcion, link_trailer } = req.body;
 
@@ -13,7 +17,6 @@ exports.registrarPelicula = (req, res) => {
 
     const imagen = req.file.filename;
 
-    // Verificar si ya existe la película
     const checkSql = "SELECT id FROM peliculas WHERE nombre = ?";
 
     connection.query(checkSql, [nombre], (err, results) => {
@@ -37,5 +40,84 @@ exports.registrarPelicula = (req, res) => {
 
             res.status(201).json({ message: "Película registrada correctamente 🎬" });
         });
+    });
+};
+
+
+// =============================
+// OBTENER TODAS LAS PELÍCULAS
+// =============================
+exports.obtenerPeliculas = (req, res) => {
+
+    const sql = "SELECT * FROM peliculas ORDER BY id DESC";
+
+    connection.query(sql, (err, results) => {
+        if (err) {
+            return res.status(500).json({ message: "Error al obtener películas" });
+        }
+
+        res.json(results);
+    });
+};
+
+
+// =============================
+// CAMBIAR ESTADO
+// =============================
+exports.cambiarEstado = (req, res) => {
+
+    const { id } = req.params;
+    const { estado } = req.body;
+
+    if (!estado) {
+        return res.status(400).json({ message: "El estado es obligatorio" });
+    }
+
+    const sql = "UPDATE peliculas SET estado = ? WHERE id = ?";
+
+    connection.query(sql, [estado, id], (err) => {
+        if (err) {
+            return res.status(500).json({ message: "Error al cambiar estado" });
+        }
+
+        res.json({ message: "Estado actualizado correctamente" });
+    });
+};
+
+
+// =============================
+// ACTUALIZAR PELÍCULA
+// =============================
+exports.actualizarPelicula = (req, res) => {
+
+    const { id } = req.params;
+    const { nombre, genero, descripcion, link_trailer } = req.body;
+
+    let sql;
+    let values;
+
+    if (req.file) {
+        const imagen = req.file.filename;
+        sql = `
+            UPDATE peliculas 
+            SET nombre=?, genero=?, descripcion=?, link_trailer=?, imagen=?
+            WHERE id=?
+        `;
+        values = [nombre, genero, descripcion, link_trailer, imagen, id];
+    } else {
+        sql = `
+            UPDATE peliculas 
+            SET nombre=?, genero=?, descripcion=?, link_trailer=?
+            WHERE id=?
+        `;
+        values = [nombre, genero, descripcion, link_trailer, id];
+    }
+
+    connection.query(sql, values, (err) => {
+        if (err) {
+            return res.status(500).json({ message: "Error al actualizar película" });
+        }
+
+        res.json({ message: "Película actualizada correctamente" });
     });
 };
