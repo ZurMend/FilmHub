@@ -23,6 +23,8 @@ SET time_zone = "+00:00";
 
 -- --------------------------------------------------------
 
+CREATE DATABASE IF NOT EXISTS `streaming_db`;
+
 --
 -- Estructura de tabla para la tabla `clientes`
 --
@@ -126,7 +128,7 @@ VALUES
 'Admin',
 'System',
 'Master',
-'Themaster@FilmHum.com',
+'Themaster@FilmHub.com',
 '$2y$10$wJ7vQ2p3b9sK1mN8xYzE7uQ4rT5yU6iO7pL8kJ9hGfD3sA2bC1dE', -- Contraseña: Pulgarsito3K
 'activo'
 );
