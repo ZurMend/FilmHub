@@ -4,7 +4,7 @@ $pageTitle = 'Consultar Clientes';
 
 require_once __DIR__ . '/config/database.php';
 require_once __DIR__ . '/helpers/auth_helper.php';
-require_once __DIR__ . '/helpers/mail_helper.php';
+require_once __DIR__ . '/../helpers/MailHelper.php';
 
 $user = requireAdmin();
 $db = Database::getConnection();
