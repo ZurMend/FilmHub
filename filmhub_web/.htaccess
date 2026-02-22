@@ -1,0 +1,17 @@
+# Proteger archivos sensibles
+<FilesMatch "\.(env|json|md|sql)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Proteger la carpeta config
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^config/ - [F,L]
+    RewriteRule ^helpers/ - [F,L]
+    RewriteRule ^vendor/ - [F,L]
+    RewriteRule ^database/ - [F,L]
+</IfModule>
+
+# Prevenir listado de directorios
+Options -Indexes
