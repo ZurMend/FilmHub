@@ -29,6 +29,11 @@ switch ($route) {
         $controller = new PeliculaController();
         $controller->listarTodas();
         break;
+    case 'peliculas/editar':
+        require_once 'controllers/PeliculaController.php';
+        $controller = new PeliculaController();
+        $controller->editar();
+        break;
 
     default:
         jsonResponse("error", null, "Ruta no encontrada");

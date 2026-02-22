@@ -54,44 +54,39 @@ if (isset($_GET['action']) && isset($_GET['id'])) {
 
 // ===== MODIFICAR =====
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_id'])) {
-    $editId      = (int) $_POST['edit_id'];
-    $nombre      = trim($_POST['nombre'] ?? '');
-    $genero      = trim($_POST['genero'] ?? '');
-    $descripcion = trim($_POST['descripcion'] ?? '');
-    $linkTrailer = trim($_POST['link_trailer'] ?? '');
 
-    if (empty($nombre) || empty($genero) || empty($descripcion)) {
-        $error = 'Los campos Nombre, Genero y Descripcion son obligatorios.';
+    $apiUrl = "http://localhost/FilmHub/filmhub_api/index.php?route=peliculas/editar";
+
+    $ch = curl_init();
+
+    $postData = [
+        'id' => $_POST['edit_id'],
+        'nombre' => $_POST['nombre'],
+        'genero' => $_POST['genero'],
+        'descripcion' => $_POST['descripcion'],
+        'link_trailer' => $_POST['link_trailer']
+    ];
+
+    // Si hay imagen nueva
+    if (!empty($_FILES['imagen']['tmp_name'])) {
+        $postData['imagen'] = new CURLFile($_FILES['imagen']['tmp_name'], $_FILES['imagen']['type'], $_FILES['imagen']['name']);
+    }
+
+    curl_setopt($ch, CURLOPT_URL, $apiUrl);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: multipart/form-data']);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    $response = curl_exec($ch);
+    curl_close($ch);
+
+    $result = json_decode($response, true);
+
+    if ($result && $result['status'] === 'success') {
+        $success = "Película actualizada correctamente.";
     } else {
-        // Procesar nueva imagen si se subio
-        $imagenUpdate = '';
-        $params = [
-            ':nombre'  => $nombre,
-            ':genero'  => $genero,
-            ':desc'    => $descripcion,
-            ':trailer' => $linkTrailer ?: null,
-            ':id'      => $editId,
-        ];
-
-        if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
-            $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-            if (in_array($_FILES['imagen']['type'], $allowedTypes)) {
-                $ext = pathinfo($_FILES['imagen']['name'], PATHINFO_EXTENSION);
-                $imagenNombre = uniqid('pelicula_') . '.' . $ext;
-                if (!is_dir(UPLOAD_DIR)) { mkdir(UPLOAD_DIR, 0755, true); }
-                move_uploaded_file($_FILES['imagen']['tmp_name'], UPLOAD_DIR . $imagenNombre);
-                $imagenUpdate = ', imagen = :img';
-                $params[':img'] = $imagenNombre;
-            }
-        }
-
-        $db->prepare("
-            UPDATE peliculas 
-            SET nombre = :nombre, genero = :genero, descripcion = :desc, link_trailer = :trailer{$imagenUpdate}
-            WHERE id = :id
-        ")->execute($params);
-
-        $success = 'Pelicula actualizada correctamente.';
+        $error = "Error al actualizar película.";
     }
 }
 
@@ -210,9 +205,9 @@ require_once __DIR__ . '/includes/sidebar.php';
                     <tr>
                         <td>
                             <?php if ($peli['imagen']): ?>
-                                <img src="uploads/<?= htmlspecialchars($peli['imagen']) ?>" 
-                                     alt="<?= htmlspecialchars($peli['nombre']) ?>"
-                                     style="width: 60px; height: 80px; object-fit: cover; border-radius: 6px;">
+                                <img src="/FilmHub/filmhub_api/uploads/<?= htmlspecialchars($peli['imagen']) ?>"
+                                    alt="<?= htmlspecialchars($peli['nombre']) ?>"
+                                    style="width: 60px; height: 80px; object-fit: cover; border-radius: 6px;">
                             <?php else: ?>
                                 <div style="width: 60px; height: 80px; background: #222; border-radius: 6px; display: flex; align-items: center; justify-content: center;">
                                     <i class="bi bi-image" style="color: #444;"></i>

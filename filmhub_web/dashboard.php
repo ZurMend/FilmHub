@@ -20,6 +20,7 @@ $peliculasActivas = $db->query("SELECT COUNT(*) FROM peliculas WHERE estado = 'a
 
 require_once __DIR__ . '/includes/header.php';
 require_once __DIR__ . '/includes/sidebar.php';
+define('UPLOADS_URL', '../filmhub_api/uploads/');
 ?>
 
 <div class="main-content">
@@ -85,9 +86,9 @@ require_once __DIR__ . '/includes/sidebar.php';
                             <!-- Imagen -->
                             <div class="movie-poster" style="position: relative; height: 200px; overflow: hidden;">
                                 <?php if ($peli['imagen']): ?>
-                                    <img src="uploads/<?= htmlspecialchars($peli['imagen']) ?>" 
-                                         alt="<?= htmlspecialchars($peli['nombre']) ?>"
-                                         style="width: 100%; height: 100%; object-fit: cover;">
+                                    <img src="<?= UPLOADS_URL . htmlspecialchars($peli['imagen']) ?>" 
+                                        alt="<?= htmlspecialchars($peli['nombre']) ?>"
+                                        style="width: 100%; height: 100%; object-fit: cover; object-position: center;">
                                 <?php else: ?>
                                     <div style="width: 100%; height: 100%; background: #222; display: flex; align-items: center; justify-content: center;">
                                         <i class="bi bi-film" style="font-size: 3rem; color: #333;"></i>
