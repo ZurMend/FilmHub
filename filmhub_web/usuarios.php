@@ -61,7 +61,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['registrar'])) {
                 ':pass'   => $hashedPassword,
             ]);
 
-            $sent = sendWelcomeEmail($email, $nombre, $generatedPassword, 'admin');
+            // ==============================
+            // MENSAJE DE BIENVENIDA ADMIN
+            // ==============================
+
+            $mensaje = '
+            <div style="font-family: Arial; max-width:500px; margin:auto; background:#1a1a1a; border-radius:12px; overflow:hidden;">
+                <div style="background:#f97316; padding:20px; text-align:center;">
+                    <h1 style="margin:0; color:#000;">FilmHub</h1>
+                </div>
+                <div style="padding:30px; color:#fff;">
+                    <h2 style="color:#f97316;">Cuenta de Administrador Creada</h2>
+                    <p>Hola <strong>' . htmlspecialchars($nombre) . '</strong>,</p>
+                    <p>Tu cuenta de administrador ha sido creada exitosamente.</p>
+
+                    <div style="background:#333; padding:15px; border-radius:8px; margin:20px 0;">
+                        <p><strong>Email:</strong> ' . htmlspecialchars($email) . '</p>
+                        <p><strong>Contraseña:</strong> 
+                            <code style="color:#f97316;">' . htmlspecialchars($generatedPassword) . '</code>
+                        </p>
+                    </div>
+
+                    <p style="color:#999; font-size:13px;">
+                        Por seguridad, te recomendamos cambiar tu contraseña después de iniciar sesión.
+                    </p>
+                </div>
+                <div style="background:#111; padding:15px; text-align:center; color:#666; font-size:12px;">
+                    © ' . date('Y') . ' FilmHub
+                </div>
+            </div>
+            ';
+
+            $sent = MailHelper::enviarCorreo(
+                $email,
+                "Cuenta Administrador - FilmHub",
+                $mensaje
+            );
 
             if ($sent) {
                 $success = 'Usuario administrador registrado. Se envio la contrasena a su correo.';
