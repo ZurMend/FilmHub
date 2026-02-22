@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "create-admin": "node scripts/create-admin.js",
+    "create-client": "node scripts/create-client.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

@@ -10,6 +10,7 @@ app.use(express.json());
 
 const authRoutes = require('./routes/auth.routes');
 app.use('/api/auth', authRoutes);
+app.get('/api/auth/ping', (req, res) => res.json({ ok: true, msg: 'API alcanzable' }));
 
 const peliculasRoutes = require('./routes/peliculas.routes');
 app.use('/api/peliculas', peliculasRoutes);
