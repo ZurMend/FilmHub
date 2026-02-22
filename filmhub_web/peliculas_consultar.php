@@ -16,12 +16,39 @@ if (isset($_GET['action']) && isset($_GET['id'])) {
     $id = (int) $_GET['id'];
     $action = $_GET['action'];
 
-    if ($action === 'activar') {
-        $db->prepare("UPDATE peliculas SET estado = 'activa' WHERE id = :id")->execute([':id' => $id]);
-        $success = 'Pelicula activada correctamente.';
-    } elseif ($action === 'desactivar') {
-        $db->prepare("UPDATE peliculas SET estado = 'inactiva' WHERE id = :id")->execute([':id' => $id]);
-        $success = 'Pelicula desactivada correctamente.';
+    if ($action === 'activar' || $action === 'desactivar') {
+
+        $nuevoEstado = $action === 'activar' ? 'activa' : 'inactiva';
+
+        $apiUrl = "http://localhost/FilmHub/filmhub_api/index.php?route=peliculas/estado";
+
+        $data = [
+            "id" => $id,
+            "estado" => $nuevoEstado
+        ];
+
+        $options = [
+            "http" => [
+                "header"  => "Content-Type: application/json",
+                "method"  => "POST",
+                "content" => json_encode($data)
+            ]
+        ];
+
+        $context = stream_context_create($options);
+        $response = file_get_contents($apiUrl, false, $context);
+
+        if ($response === false) {
+            $error = "No se pudo conectar con la API.";
+        } else {
+            $result = json_decode($response, true);
+
+            if ($result && $result['status'] === 'success') {
+                $success = "Estado actualizado correctamente.";
+            } else {
+                $error = "Error al actualizar estado desde la API.";
+            }
+        }
     }
 }
 
@@ -68,8 +95,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_id'])) {
     }
 }
 
+// ===== OBTENER PELICULAS DESDE API =====
 // Obtener todas las peliculas
-$peliculas = $db->query("SELECT * FROM peliculas ORDER BY created_at DESC")->fetchAll();
+//$peliculas = $db->query("SELECT * FROM peliculas ORDER BY created_at DESC")->fetchAll();
+
+// Consumir API
+$apiUrl = "http://localhost/FilmHub/filmhub_api/index.php?route=peliculas/admin";
+
+$response = @file_get_contents($apiUrl);
+
+if ($response === false) {
+    $peliculas = [];
+    $error = "No se pudo conectar con la API.";
+} else {
+    $data = json_decode($response, true);
+
+    if (isset($data['status']) && $data['status'] === 'success') {
+        $peliculas = $data['data'];
+    } else {
+        $peliculas = [];
+        $error = "Error al obtener peliculas desde la API.";
+    }
+}
 
 // Pelicula a editar (si aplica)
 $editPeli = null;
